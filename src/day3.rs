@@ -2,8 +2,6 @@ use anyhow::{Result, Error};
 use std::str::FromStr;
 
 struct Ruckstack {
-    left: String,
-    right: String,
     common: usize
 }
 
@@ -30,7 +28,7 @@ impl FromStr for Ruckstack {
 
         common = ascii_to_alph(common);
 
-        Ok(Ruckstack { left: left.to_string(), right: right.to_string(), common })
+        Ok(Ruckstack { common })
     }
 }
 

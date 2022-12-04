@@ -32,16 +32,15 @@ fn main() -> Result<()> {
     let total = include_str!("../inputs/4.prod")
         .lines()
         .map(|x| {
-            let (a, b) = if let Some((a, b)) = x.split_once(",") {
-                let a: Session = a.parse().unwrap();
-                let b: Session = b.parse().unwrap();
+            match x.split_once(",") {
+                Some((a,b)) => {
+                    let a: Session = a.parse().unwrap();
+                    let b: Session = b.parse().unwrap();
 
-                (a, b)
-            } else {
-                unreachable!("WTF!!!!!!");
-            };
-
-            (a, b)
+                    (a, b)
+                },
+                None => unreachable!("WTF!!!!!!")
+            }
         }).collect::<Vec<(Session, Session)>>();
 
     let part1: usize = total.iter()

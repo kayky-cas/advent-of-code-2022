@@ -7,13 +7,25 @@ struct Session {
     min: usize
 }
 
+impl Session {
+
+    fn fully_contains(&self, b: &Session) -> bool {
+        return self.min <= b.min && self.max >= b.max
+    }
+
+    fn overlap(&self, b: &Session) -> bool {
+        (self.min <= b.min && b.min <= self.max) || (self.max >= b.max && b.max >= self.min) 
+    }
+    
+}
+
 impl FromStr for Session {
     type Err = Error;
 
     fn from_str(s: &str) -> Result<Self> {
         let (min, max) = if let Some((min, max)) = s.split_once("-") {
-            let min: usize = min.parse().unwrap();
-            let max: usize = max.parse().unwrap();
+            let min = min.parse().unwrap();
+            let max = max.parse().unwrap();
 
             (min, max)
         } else {
@@ -24,36 +36,32 @@ impl FromStr for Session {
     }
 }
 
-fn overlap(a: &Session, b: &Session) -> bool {
-    (a.min <= b.min && b.min <= a.max) || (a.max >= b.max && b.max >= a.min) 
-}
 
 fn main() -> Result<()> {
-    let total = include_str!("../inputs/4.prod")
+    let total: Vec<(Session, Session)> = include_str!("../inputs/4.prod")
         .lines()
         .map(|x| {
             match x.split_once(",") {
                 Some((a,b)) => {
-                    let a: Session = a.parse().unwrap();
-                    let b: Session = b.parse().unwrap();
+                    let a = a.parse().unwrap();
+                    let b = b.parse().unwrap();
 
                     (a, b)
                 },
                 None => unreachable!("WTF!!!!!!")
             }
-        }).collect::<Vec<(Session, Session)>>();
+        }).collect();
 
     let part1: usize = total.iter()
-        .filter(|&(a, b)| (a.min <= b.min && a.max >= b.max) || (b.min <= a.min && b.max >= a.max))
+        .filter(|&(a, b)| a.fully_contains(b) || b.fully_contains(a))
         .count();
 
     let part2: usize = total.iter()
-        .filter(|&(a,b)| overlap(a, b) || overlap(b, a))
+        .filter(|&(a,b)| a.overlap(b) || b.overlap(a))
         .count();
 
     println!("Part 1 = {}", part1);
     println!("Part 2 = {}", part2);
 
     Ok(())
-
 }

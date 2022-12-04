@@ -1,3 +1,3 @@
 # Advent of Code 2022
 
-### ⭐️x6
+### ⭐️x8

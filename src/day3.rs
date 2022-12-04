@@ -38,7 +38,7 @@ fn common_char(mut s: Vec<&str>) -> usize {
     str.chars()
         .find(|&c| {
             let mut unique = true;
-            s.iter().for_each(|x| {
+            s.iter().for_each(|&x| {
                 if x.chars().find(|&f| f == c).is_none() {
                     unique = false;
                 }
@@ -50,11 +50,8 @@ fn common_char(mut s: Vec<&str>) -> usize {
 fn main() -> Result<()> {
     let input = include_str!("../inputs/3.prod");
 
-    let part1:usize = input.lines()
-        .map(|x| {
-            let r = x.parse::<Ruckstack>().unwrap();
-            return r.common;
-        })
+    let part1: usize = input.lines()
+        .map(|x| x.parse::<Ruckstack>().unwrap().common)
         .sum();
 
     let part2: usize = input.lines()

@@ -15,5 +15,5 @@ fn main() -> Result<()> {
     println!("Part 1: {:?}", cals[0]);
     println!("Part 2: {:?}", cals.iter().take(3).sum::<usize>());
 
-    return Ok(());
+    Ok(())
 }

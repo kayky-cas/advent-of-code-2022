@@ -8,7 +8,6 @@ struct Session {
 }
 
 impl Session {
-
     fn fully_contains(&self, b: &Session) -> bool {
         return self.min <= b.min && self.max >= b.max
     }
@@ -16,23 +15,21 @@ impl Session {
     fn overlap(&self, b: &Session) -> bool {
         (self.min <= b.min && b.min <= self.max) || (self.max >= b.max && b.max >= self.min) 
     }
-    
 }
 
 impl FromStr for Session {
     type Err = Error;
 
     fn from_str(s: &str) -> Result<Self> {
-        let (min, max) = if let Some((min, max)) = s.split_once("-") {
-            let min = min.parse().unwrap();
-            let max = max.parse().unwrap();
+        match s.split_once("-") {
+            Some((min, max)) => {
+                let min = min.parse().unwrap();
+                let max = max.parse().unwrap();
 
-            (min, max)
-        } else {
-            unreachable!("Oh my god how you got here????????");
-        };
-
-        Ok(Session { max, min })
+                Ok(Session { max, min })
+            }, 
+            None => unreachable!("Oh my god how you got here????????")
+        }
     }
 }
 

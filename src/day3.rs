@@ -5,16 +5,6 @@ struct Ruckstack {
     common: usize
 }
 
-fn ascii_to_alph(mut c: usize) -> usize {
-    if c >= 97 && c <= 'z' as usize {
-        c = c - 96;
-    } else {
-        c = c - 64 + 26;
-    }
-
-    return c;
-}
-
 impl FromStr for Ruckstack {
     type Err = Error;
 
@@ -30,6 +20,16 @@ impl FromStr for Ruckstack {
 
         Ok(Ruckstack { common })
     }
+}
+
+fn ascii_to_alph(mut c: usize) -> usize {
+    if c >= 97 && c <= 'z' as usize {
+        c = c - 96;
+    } else {
+        c = c - 64 + 26;
+    }
+
+    return c;
 }
 
 fn common_char(mut s: Vec<&str>) -> usize {

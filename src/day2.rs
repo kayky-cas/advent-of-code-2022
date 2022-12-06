@@ -1,7 +1,6 @@
 use anyhow::Result;
 use std::str::FromStr;
 
-
 const RESULTS: [usize; 9] = [3, 6, 0, 0, 3, 6, 6, 0, 3];
 const RESULTS_PART2: [usize; 9] = [3, 4, 8, 1, 5, 9, 2, 6, 7];
 
@@ -42,12 +41,10 @@ impl FromStr for HandleRPS2 {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self> {
-        let (e, m) = match s.split_once(" ") {
-            Some((e, m)) => (convert_num(e), convert_num(m)),
+        match s.split_once(" ") {
+            Some((e, m)) => Ok(HandleRPS2 { value: RESULTS_PART2[convert_num(e) + convert_num(m)] }),
             None => return Err(anyhow::anyhow!("input is bad bruh"))
-        };
-
-        Ok(HandleRPS2 { value: RESULTS_PART2[e + m] })
+        }
     }
 }
 fn main() -> Result<()> {
@@ -67,5 +64,5 @@ fn main() -> Result<()> {
     println!("Part 1: {}", play_sums);
     println!("Part 2: {}", play_sums_2);
 
-    return Ok(());
+    Ok(())
 }

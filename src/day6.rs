@@ -1,5 +1,4 @@
-use std::{collections::HashSet, usize};
-
+use std::collections::HashSet;
 use anyhow::Result;
 
 fn get_marker(buffer: &str, marker_count: usize) -> usize {

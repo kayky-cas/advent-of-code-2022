@@ -1,99 +1,25 @@
-use std::str::FromStr;
+use std::{collections::HashSet, usize};
 
-use anyhow::{Result, Error};
+use anyhow::Result;
 
-struct Buffer14 {
-    marker: usize
-}
-
-impl FromStr for Buffer14 {
-    type Err = Error;
-
-    fn from_str(s: &str) -> Result<Self> {
-        let chunks = s.chars()
-            .collect::<Vec<_>>();
-
-        for (i, c) in chunks.windows(14).enumerate() {
-            let mut have = false;            
-            for (px, ch) in c.iter().enumerate() {
-                for px2 in (px + 1)..c.len() {
-                    if &c[px2] == ch {
-                        have = true;
-                        break;
-                    }
-                    if have {
-                        break;
-                    }
-                }
-
-                if have {
-                    break;
-                }
-            }
-
-            if !have {
-                return Ok(Buffer14 { marker: i + 14 });    
-            }
-        }
-
-        Err(anyhow::anyhow!("Meeeee"))
-    }
-}
-
-struct Buffer {
-    marker: usize
-}
-
-impl FromStr for Buffer {
-    type Err = Error;
-
-    fn from_str(s: &str) -> Result<Self> {
-        let chunks = s.chars()
-            .collect::<Vec<_>>();
-
-        for (i, c) in chunks.windows(4).enumerate() {
-            let mut have = false;            
-            for (px, ch) in c.iter().enumerate() {
-                for px2 in (px + 1)..c.len() {
-                    if &c[px2] == ch {
-                        have = true;
-                        break;
-                    }
-                    if have {
-                        break;
-                    }
-                }
-
-                if have {
-                    break;
-                }
-            }
-
-            if !have {
-                return Ok(Buffer { marker: i + 4 });    
-            }
-        }
-
-        Err(anyhow::anyhow!("Meeeee"))
-    }
+fn get_marker(buffer: &str, marker_count: usize) -> usize {
+    buffer
+        .as_bytes()
+        .windows(marker_count)
+        .enumerate()
+        .filter(|(_, x)| x.iter().collect::<HashSet<&u8>>().len() == marker_count)
+        .map(|(i, _)| i)
+        .next().unwrap() + marker_count
 }
 
 fn main() -> Result<()> {
+    let buffer = include_str!("../inputs/6.prod");
 
-    let input = include_str!("../inputs/6.prod");
+    let part1 = get_marker(buffer, 4);
+    let part2 = get_marker(buffer, 14);
 
-    let part1 = input
-        .parse::<Buffer>()
-        .unwrap()
-        .marker;
-
-    let part2 = input
-        .parse::<Buffer14>()
-        .unwrap()
-        .marker;
-
-    println!("Part 1 = {}", part1);
-    println!("Part 2 = {}", part2);
+    println!("Part 1 = {:?}", part1);
+    println!("Part 2 = {:?}", part2);
 
     Ok(())
 }

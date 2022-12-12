@@ -43,6 +43,11 @@ impl FileSystem {
 
 
     fn cd(&mut self, path: &str) {
+        if path == "/" {
+            self.cursor = Rc::clone(&self.root);
+            return;
+        }
+
         if path == ".." {
             let clone = Rc::clone(&self.cursor.borrow().parent.as_ref().unwrap());
             self.cursor = clone;
@@ -94,6 +99,60 @@ impl FileSystem {
     fn print(&self) {
        self.print_node(Rc::clone(&self.root), "".to_string()); 
     }
+
+    fn size(&self, current: Link) -> usize {
+        let value = &current.borrow().value;
+        let mut size = 0;
+
+        match value {
+            FSEnty::Dir => {
+                for child in &current.borrow().children {
+                    size += self.size(Rc::clone(&child));
+                }
+            },
+            FSEnty::File(f_size) => {
+                size += f_size;
+            }
+        };
+
+        return size;
+    }
+
+    fn size_part1(&self, current: Link, sizes: &mut Vec<usize>) -> usize {
+        let value = &current.borrow().value;
+        let mut size = 0;
+
+        match value {
+            FSEnty::Dir => {
+                for child in &current.borrow().children {
+                    size += self.size_part1(Rc::clone(&child), sizes);
+                }
+
+                if size <= 100000 {
+                    sizes.push(size);
+                }
+            },
+            FSEnty::File(f_size) => {
+                size += f_size;
+            }
+        };
+
+        return size;
+    }
+
+    fn part1(&self) -> usize {
+        let mut sizes: Vec<usize> = vec![];
+        self.size_part1(Rc::clone(&self.root), &mut sizes);
+
+        sizes
+            .iter()
+            .sum()
+
+    }
+
+    fn total_size(&self) -> usize {
+        self.size(Rc::clone(&self.root))
+    }
 }
 
 impl FromStr for FileSystem {
@@ -103,7 +162,6 @@ impl FromStr for FileSystem {
         let mut tree = FileSystem::new();
 
         s.lines()
-            .skip(1)
             .for_each(|s| {
                 let command: Vec<_> = s.split(" ").collect();
 
@@ -125,10 +183,12 @@ impl FromStr for FileSystem {
 }
 
 fn main() -> Result<()> {
-    let tree = include_str!("../inputs/7.test")
-        .parse::<FileSystem>();
+    let tree = include_str!("../inputs/7.prod")
+        .parse::<FileSystem>().unwrap();
 
-    tree.unwrap().print();
+    tree.print();
+
+    println!("Part 1: {}", tree.part1());
 
     Ok(())
 }

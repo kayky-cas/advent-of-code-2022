@@ -153,6 +153,33 @@ impl FileSystem {
     fn total_size(&self) -> usize {
         self.size(Rc::clone(&self.root))
     }
+
+    fn delete_part2(&self, current: Link, sizes: &mut Vec<usize>, max: usize) -> usize {
+        let value = &current.borrow().value;
+        let mut size = 0;
+
+        match value {
+            FSEnty::Dir => {
+                for child in &current.borrow().children {
+                    size += self.delete_part2(Rc::clone(&child), sizes, max);
+                }
+
+                if size > max {
+                    sizes.push(size);
+               }
+            },
+            FSEnty::File(f_size) => {
+                size += f_size;
+            }
+        };
+
+        return size;
+    }
+
+    fn part2(&self) -> usize {
+        let need_this = 70000000 - self.total_size();
+        0
+    }
 }
 
 impl FromStr for FileSystem {

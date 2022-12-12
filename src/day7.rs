@@ -164,7 +164,7 @@ impl FileSystem {
                     size += self.delete_part2(Rc::clone(&child), sizes, max);
                 }
 
-                if size > max {
+                if size >= max {
                     sizes.push(size);
                }
             },
@@ -177,8 +177,14 @@ impl FileSystem {
     }
 
     fn part2(&self) -> usize {
-        let need_this = 70000000 - self.total_size();
-        0
+        let max = 70000000 - self.total_size();
+        
+        let mut sizes: Vec<usize> = vec![];
+        self.delete_part2(Rc::clone(&self.root), &mut sizes, 30000000 - max);
+
+        sizes.sort();
+
+        sizes[0]
     }
 }
 
@@ -216,6 +222,7 @@ fn main() -> Result<()> {
     tree.print();
 
     println!("Part 1: {}", tree.part1());
+    println!("Part 2: {}", tree.part2());
 
     Ok(())
 }

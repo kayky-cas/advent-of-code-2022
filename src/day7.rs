@@ -157,11 +157,9 @@ impl FileSystem {
 
         self.size_aoc(Rc::clone(&self.root), &mut part1, &mut part2, 30000000 - max);
 
-        let part1 = part1.iter().sum();
         part2.sort();
-        let part2 = part2[0];
 
-        (part1, part2)
+        (part1.iter().sum(), part2[0])
     }
 }
 

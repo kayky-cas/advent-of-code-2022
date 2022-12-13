@@ -1,4 +1,4 @@
-use std::{rc::Rc, cell::RefCell, str::FromStr};
+use std::{rc::Rc, cell::RefCell, str::FromStr, usize};
 
 use anyhow::Result;
 
@@ -118,54 +118,23 @@ impl FileSystem {
         return size;
     }
 
-    fn size_part1(&self, current: Link, sizes: &mut Vec<usize>) -> usize {
+    fn size_aoc(&self, current: Link, part1: &mut Vec<usize>, part2: &mut Vec<usize>, max: usize) -> usize {
+
         let value = &current.borrow().value;
         let mut size = 0;
 
         match value {
             FSEnty::Dir => {
                 for child in &current.borrow().children {
-                    size += self.size_part1(Rc::clone(&child), sizes);
+                    size += self.size_aoc(Rc::clone(&child), part1, part2, max);
                 }
 
                 if size <= 100000 {
-                    sizes.push(size);
-                }
-            },
-            FSEnty::File(f_size) => {
-                size += f_size;
-            }
-        };
-
-        return size;
-    }
-
-    fn part1(&self) -> usize {
-        let mut sizes: Vec<usize> = vec![];
-        self.size_part1(Rc::clone(&self.root), &mut sizes);
-
-        sizes
-            .iter()
-            .sum()
-
-    }
-
-    fn total_size(&self) -> usize {
-        self.size(Rc::clone(&self.root))
-    }
-
-    fn delete_part2(&self, current: Link, sizes: &mut Vec<usize>, max: usize) -> usize {
-        let value = &current.borrow().value;
-        let mut size = 0;
-
-        match value {
-            FSEnty::Dir => {
-                for child in &current.borrow().children {
-                    size += self.delete_part2(Rc::clone(&child), sizes, max);
+                    part1.push(size);
                 }
 
                 if size >= max {
-                    sizes.push(size);
+                    part2.push(size);
                }
             },
             FSEnty::File(f_size) => {
@@ -176,15 +145,23 @@ impl FileSystem {
         return size;
     }
 
-    fn part2(&self) -> usize {
+    fn total_size(&self) -> usize {
+        self.size(Rc::clone(&self.root))
+    }
+
+    fn aoc(&self) -> (usize, usize) {
         let max = 70000000 - self.total_size();
         
-        let mut sizes: Vec<usize> = vec![];
-        self.delete_part2(Rc::clone(&self.root), &mut sizes, 30000000 - max);
+        let mut part1: Vec<usize> = vec![];
+        let mut part2: Vec<usize> = vec![];
 
-        sizes.sort();
+        self.size_aoc(Rc::clone(&self.root), &mut part1, &mut part2, 30000000 - max);
 
-        sizes[0]
+        let part1 = part1.iter().sum();
+        part2.sort();
+        let part2 = part2[0];
+
+        (part1, part2)
     }
 }
 
@@ -221,8 +198,10 @@ fn main() -> Result<()> {
 
     tree.print();
 
-    println!("Part 1: {}", tree.part1());
-    println!("Part 2: {}", tree.part2());
+    let (part1, part2) = tree.aoc();
+
+    println!("Part 1: {}", part1);
+    println!("Part 2: {}", part2);
 
     Ok(())
 }

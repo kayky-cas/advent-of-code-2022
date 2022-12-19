@@ -11,7 +11,7 @@ impl Forest {
         Self { trees: vec![] }
     }
 
-    fn hight_trees(&self) -> Vec<i32> {
+    fn house_tree_options(&self) -> Vec<i32> {
         let mut trees = vec![];
 
         let tree_hight = self.trees.len();
@@ -200,12 +200,14 @@ fn main() -> Result<()> {
     let visibles = input.get_visibles_trees();
 
     let part1 = visibles.len();
-    let mut part2 = input.hight_trees();
+    let mut part2 = input.house_tree_options();
 
     part2.sort();
 
+    let part2 = part2.last();
+
     println!("{:?}", part1);
-    println!("{:?}", part2.last());
+    println!("{:?}", part2);
 
     Ok(())
 }

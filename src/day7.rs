@@ -28,6 +28,17 @@ impl Node {
     fn append(&mut self, child: Link) {
         self.children.push(child);
     }
+
+}
+
+fn print_node(current: Link, spaces: String) {
+    let name = &current.borrow().name; 
+
+    println!("{}{}", spaces, name);
+    
+    for child in &current.borrow().children {
+        print_node(Rc::clone(&child), spaces.clone() + "   ")
+    }
 }
 
 struct FileSystem {
@@ -86,18 +97,9 @@ impl FileSystem {
         child.try_borrow_mut().unwrap().parent = Some(Rc::clone(&self.cursor));
     }
 
-    fn print_node(&self, current: Link, spaces: String) {
-        let name = &current.borrow().name; 
-
-        println!("{}{}", spaces, name);
-        
-        for child in &current.borrow().children {
-            self.print_node(Rc::clone(&child), spaces.clone() + "   ")
-        }
-    }
 
     fn print(&self) {
-       self.print_node(Rc::clone(&self.root), "".to_string()); 
+        print_node(Rc::clone(&self.root), "".to_string()); 
     }
 
     fn size(&self, current: Link) -> usize {
@@ -178,11 +180,12 @@ impl FromStr for FileSystem {
                        "cd" => tree.cd(command[2]),
                        _ => {}
                     }
-                } else {
-                    match command[0] {
-                       "dir" => tree.mkdir(command[1]),
-                       _ => tree.touch(command[1], command[0].parse::<usize>().unwrap())
-                    }
+                    return;
+                }
+
+                match command[0] {
+                   "dir" => tree.mkdir(command[1]),
+                   _ => tree.touch(command[1], command[0].parse::<usize>().unwrap())
                 }
             });
 
@@ -192,7 +195,8 @@ impl FromStr for FileSystem {
 
 fn main() -> Result<()> {
     let tree = include_str!("../inputs/7.prod")
-        .parse::<FileSystem>().unwrap();
+        .parse::<FileSystem>()
+        .unwrap();
 
     tree.print();
 

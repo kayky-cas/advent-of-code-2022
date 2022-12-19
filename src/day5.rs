@@ -1,5 +1,3 @@
-use std::{rc::Rc, env::split_paths};
-
 use anyhow::{Result, Ok};
 
 fn main() -> Result<()> {

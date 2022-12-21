@@ -152,12 +152,15 @@ impl FileSystem {
     }
 
     fn aoc(&self) -> (usize, usize) {
-        let max = 70000000 - self.total_size();
+        const TOTAL_SPACE: usize = 70000000;
+        const MINIMUN_FREE: usize = 30000000;
+
+        let max = TOTAL_SPACE - self.total_size();
         
         let mut part1: Vec<usize> = vec![];
         let mut part2: Vec<usize> = vec![];
 
-        self.size_aoc(Rc::clone(&self.root), &mut part1, &mut part2, 30000000 - max);
+        self.size_aoc(Rc::clone(&self.root), &mut part1, &mut part2, MINIMUN_FREE - max);
 
         part2.sort();
 

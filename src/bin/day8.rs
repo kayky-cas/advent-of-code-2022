@@ -1,6 +1,5 @@
-use std::str::FromStr;
-
 use anyhow::Result;
+use std::str::FromStr;
 
 struct Forest {
     trees: Vec<Vec<u8>>
@@ -13,14 +12,13 @@ impl Forest {
 
     fn house_tree_options(&self) -> Vec<i32> {
         let mut trees = vec![];
-
         let tree_hight = self.trees.len();
 
         for (i, row) in (&self.trees).iter().enumerate() {
+            let tree_width = row.len();
 
             for (j, tree) in (&row).iter().enumerate() {
                 let tree = *tree;
-                let tree_width = row.len();
 
                 if i == 0 || i == tree_hight - 1 || j == 0 || j == tree_width - 1 {
                     continue;
@@ -183,7 +181,8 @@ impl FromStr for Forest {
                 let list: Vec<u8> = line
                     .chars()
                     .map(|c| c.to_string()
-                    .parse::<u8>().expect("????????"))
+                    .parse::<u8>()
+                        .expect("????????"))
                     .collect();
 
                 forest.trees.push(list);
@@ -204,7 +203,7 @@ fn main() -> Result<()> {
 
     part2.sort();
 
-    let part2 = part2.last();
+    let part2 = part2.last().unwrap();
 
     println!("{:?}", part1);
     println!("{:?}", part2);

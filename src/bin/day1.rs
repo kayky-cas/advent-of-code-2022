@@ -5,9 +5,9 @@ fn main() -> Result<()> {
     let mut cals: Vec<usize> = include_str!("../inputs/1.prod")    
         .split("\n\n")
         .map(|cal| {
-            return cal.split("\n")
-                    .flat_map(|x| x.parse::<usize>())
-                    .sum();
+            cal.split("\n")
+                .flat_map(|x| x.parse::<usize>())
+                .sum()
         }).collect();
 
     cals.sort_by(|a, b| b.cmp(a));

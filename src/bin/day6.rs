@@ -6,7 +6,7 @@ fn get_marker(buffer: &str, marker_count: usize) -> usize {
         .as_bytes()
         .windows(marker_count)
         .enumerate()
-        .find(|(_, x)| x.iter().collect::<HashSet<&u8>>().len() == marker_count)
+        .find(|(_, x)| x.iter().collect::<HashSet<_>>().len() == marker_count)
         .expect("Oops Eric, I think you are not so good!")
         .0 + marker_count
 }
